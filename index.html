@@ -1,0 +1,147 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>你画我猜</title>
+<link href="img/myCss.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<!--登陆层-->
+<div id="loginDiv" class="dlbj">
+	<div>服务器：<input id="host" type="text" name="textfield" value="127.0.0.1"><br/></div>
+	<div>用户名：<input id="tUser" type="text" name="textfield"></div>
+	<div class="dlfwq" id="btnCon"><img src="img/dlfwq.png"  border="0"></div>
+</div>
+
+<!--主容器层-->
+<div id="main" class="main">
+	<div>
+		<div class="tx"></div>
+		<div class="wz">
+			<div id="dround"></div>
+			<!--显示问题区域-->
+			<span id="question" ></span>
+		</div>
+		<!--显示时间-->
+		<div id="qTime" class="time" >60</div>
+		<div class="tc">离开房间<img src="img/edit_undo.png" align="absmiddle" />
+		</div>
+	</div>
+	<div class="qc"></div>
+	<div>
+		<!--绘图主层-->
+		<div class="hbbox" >
+			<!--绘图区域-->
+			<div id="hb" class="hb" >
+				<!--效果层-->
+				<div id="effect"></div>
+				<canvas id="paintArea" width="525" height="370" style="display:none" ></canvas>
+			</div>
+			<!--用户显示区域-->
+			<div id="userArea" ></div>
+		</div>
+		<!--工具选项区-->
+		<div class="hbr">
+			<div id="operDiv" style="visibility: hidden;">
+				<!--颜色选取区-->
+				<div id="ys" class="ys">
+					<ul id="color">
+						<li id="black"></li>
+						<li id="red"></li>
+						<li id="orange"></li>
+						<li id="yellow"></li>
+						<li id="green"></li>
+						<li id="cyan"></li>
+						<li id="blue"></li>
+						<li id="purple"></li>
+						<li id="pink"></li>
+						<li id="gray"></li>
+					</ul>
+				</div>
+				<!--画笔大小选择区-->
+				<div id="bc" class="bc">
+					<ul id="bcdx">
+						<li><img src="img/bc1.png" /></li>
+						<li><img src="img/bc2.png" /></li>
+						<li><img src="img/bc3.png" /></li>
+						<li><img src="img/bc4.png" /></li>
+					</ul>
+				</div>
+				<!--定义工具-->
+				<div id="ssx" class="tb">
+					<div id="btnRub" class="tb1"><img src="img/huabi.jpg" width="24px" height="24" /></div>
+					<div id="btnRub" class="tb2"><img src="img/xiangpica.png" width="24px" height="24" /></div>
+					<div id="btnClear" class="tb3"><img src="img/lajixiang.png" width="24px" height="24" /></div>
+				</div>
+			</div>
+			<!--消息发布主层-->
+			<div id="msgArea" class="msgArea"></div>
+			<div class="bd">
+				<input type="text" id="txtMsg" value="" size="13" />
+				<input type="button" id="btnSendMsg" value="发送" />
+				<br/><br/>
+				<input type="button" id="btnClearMsg" value="清空聊天记录" />
+			</div>
+		</div>
+	</div>
+</div>
+<!--定义消息层-->
+<div id="msg"></div>
+</body>
+
+<script src="js/jquery-1.11.1.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/socket.io.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/myPainter.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/myClient.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		$("#btnCon").click(function() {
+			var user = $("#tUser").val();
+			client.connect();
+			client.user.uname = user;
+			client.login(function(result) {
+				if(result == 1) {
+					alert("该用户已经存在，请换用户登录！");
+				} else if(result == 0) {
+					$("#loginDiv").hide();
+					$("#main").show();
+				} else if(result == 2) {
+					alert("游戏正在进行中，请稍候登陆!");
+				}
+			});
+		});
+		
+		//绑定发送消息事件
+		$("#btnSendMsg").click(function() {
+			var txt = $("#txtMsg").val();
+			client.sendMsg(txt);
+			$("#txtMsg").val("");
+		});
+		
+		$("#txtMsg").on("keydown", function(evt) {
+			if(evt.keyCode == 13) {
+				var txt = $("#txtMsg").val();
+				client.sendMsg(txt);
+				$("#txtMsg").val("");
+			}
+		});
+
+		$("#btnClearMsg").click(function() {
+			$("#msgArea").empty();
+		});
+		
+		
+
+		
+	});
+</script>
+</html>
+
+
+
+
+
+
+
+
+
